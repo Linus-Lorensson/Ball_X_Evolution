@@ -36,6 +36,31 @@ export function getEvolutionBalls(ballArray: Array<Ball>): Array<Ball> {
     return ballArray.filter((ball) => ball.parents != undefined && ball.parents.length > 0)
 }
 
+export function getAxisBalls(ballArray: Array<Ball>): Array<Ball> {
+    const ballsToShow: Array<string> = [];
+    const response: Array<Ball> = [];
+    
+    ballArray.forEach(ball => {
+        if(ball.parents){
+            ball.parents.forEach(eachParentBall => {
+                eachParentBall.forEach(parentBall => {
+                    if(!ballsToShow.includes(parentBall)) {
+                        ballsToShow.push(parentBall);
+                    }
+                });
+            });
+        }
+    });
+
+    ballArray.forEach(ball => {
+        if(ballsToShow.includes(ball.name)){
+            response.push(ball);
+        }
+    });
+
+    return response;
+}
+
 export function getEvolutionBallFromParents(parents: Array<string>, evolutionBallArray: Array<Ball>){
     const parentCompare = JSON.stringify(parents.sort());
     return evolutionBallArray.find(evolutionBall => {
