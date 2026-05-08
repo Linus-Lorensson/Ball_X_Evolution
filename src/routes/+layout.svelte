@@ -18,20 +18,21 @@
 		padding: 0;
 		height: 100vh;
 		width: 100vw;
-		overflow: hidden; /* Disables default browser scrolling */
+		overflow: hidden;
+		background-color: #050507;
 	}
 
 	.app {
 		display: flex;
 		flex-direction: column;
 		height: 100vh;
+		width: 100vw;
 	}
 
 	main {
 		flex: 1;
 		position: relative;
-		overflow: hidden; /* Clips the zooming grid */
-		display: flex;
-		flex-direction: column;
+		overflow: hidden; /* Keeps the grid from spilling out */
+		z-index: 1;
 	}
 </style>
