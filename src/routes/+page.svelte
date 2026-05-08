@@ -17,7 +17,7 @@
 	const gridSize = $derived(baseBalls.length + 1);
 	const totalCells = $derived(gridSize * gridSize);
 
-	let scale = $state(0.5);
+	let scale = $state(0.3);
 	let pos = $state({ x: 0, y: 0 });
 	let isDragging = $state(false);
 	let hasMoved = $state(false); // Tracks if the current press is a drag [cite: 15, 16]
