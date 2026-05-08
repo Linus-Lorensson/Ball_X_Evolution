@@ -2,7 +2,6 @@
 	import { onMount } from 'svelte';
 	import { 
 		createAllBalls, 
-		getBaseBalls, 
 		getEvolutionBalls, 
 		getEvolutionBallFromParents, 
 		type Ball, 
@@ -10,6 +9,7 @@
 	} from '$lib/utils/balls';
 	import ballData from '$lib/json/balls.json'; 
 
+	// Initialize balls and resolve references
 	const allBalls = createAllBalls(ballData);
 	let baseBalls = $derived(getAxisBalls(allBalls));
 	let evolutionBalls = $derived(getEvolutionBalls(allBalls));
@@ -20,7 +20,7 @@
 	let scale = $state(0.3);
 	let pos = $state({ x: 0, y: 0 });
 	let isDragging = $state(false);
-	let hasMoved = $state(false); // Tracks if the current press is a drag [cite: 15, 16]
+	let hasMoved = $state(false); 
 	let dragStart = { x: 0, y: 0 };
 	
 	let showTooltip = $state(false);
@@ -28,7 +28,7 @@
 	let descExpanded = $state(false);
 	const DESC_LIMIT = 200; 
 
-	// Derived list of balls that use the selectedBall as a parent
+	// Find balls where current selection is a parent
 	let childEvolutions = $derived(
 		selectedBall 
 			? allBalls.filter(ball => 
@@ -81,14 +81,12 @@
 	function onMouseDown(e: MouseEvent) {
 		if (e.button !== 0) return;
 		isDragging = true;
-		hasMoved = false; // Reset movement status on new click [cite: 15]
+		hasMoved = false; 
 		dragStart = { x: e.clientX - pos.x, y: e.clientY - pos.y };
 	}
 
 	function onMouseMove(e: MouseEvent) {
 		if (!isDragging) return;
-		
-		// If the mouse moves more than 5px, mark as a drag to prevent accidental click [cite: 16]
 		const dx = Math.abs(e.clientX - (dragStart.x + pos.x));
 		const dy = Math.abs(e.clientY - (dragStart.y + pos.y));
 		if (dx > 5 || dy > 5) hasMoved = true;
@@ -102,9 +100,9 @@
 	}
 
 	function handleCellClick(row: number, col: number) {
-		if (hasMoved) return; // Prevent selection if the user was just panning [cite: 17, 18]
-		
+		if (hasMoved) return; 
 		if (row === 0 && col === 0) return;
+		
 		descExpanded = false;
 		if (row === 0 || col === 0) {
 			const index = (row || col) - 1;
@@ -165,15 +163,11 @@
 						<span class="text-indigo-500/20 text-[10px] font-bold tracking-widest">AXIS</span>
 					{:else if cellBall && cellBall.img}
 						<div class="w-full h-full p-2 {row === 0 || col === 0 ? 'bg-indigo-950/20' : ''}">
-							<img 
-								src={cellBall.img} 
-								alt={cellBall.name} 
-								class="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(99,102,241,0.4)]" 
-							/>
+							<img src={cellBall.img} alt={cellBall.name} class="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(99,102,241,0.4)]" />
 						</div>
 					{:else if row > 0 && col > 0}
 						<div class="opacity-10 group-hover:opacity-40 transition-opacity">
-							<span class="text-[10px] text-indigo-300 font-mono">{row}:{col}</span>
+							<span class="text-[36px] opacity-10 text-indigo-300 font-mono">?</span>
 						</div>
 					{/if}
 					<div class="absolute inset-0 border border-indigo-500/50 opacity-0 group-hover:opacity-100 pointer-events-none"></div>
@@ -184,8 +178,7 @@
 </div>
 
 {#if showTooltip && selectedBall}
-	<aside class="fixed bottom-12 right-12 w-[36rem] min-h-[520px] bg-[#0f0f12] border 
- border-indigo-500 shadow-[0_0_80px_rgba(99,102,241,0.5)] z-50 text-slate-200 rounded-xl flex flex-col backdrop-blur-2xl overflow-hidden">
+	<aside class="fixed bottom-12 right-12 w-[36rem] min-h-[520px] bg-[#0f0f12] border border-indigo-500 shadow-[0_0_80px_rgba(99,102,241,0.5)] z-50 text-slate-200 rounded-xl flex flex-col backdrop-blur-2xl overflow-hidden">
 		<div class="relative p-10 border-b border-indigo-900/50 flex items-center justify-center h-[180px] bg-gradient-to-b from-indigo-950/50 to-transparent flex-shrink-0">
 			{#if selectedBall.img}
 				<div class="absolute left-10 top-1/2 -translate-y-1/2">
@@ -193,15 +186,13 @@
 				</div>
 			{/if}
 			<div class="flex flex-col items-center ml-28">
-				<h4 class="font-black text-3xl text-center uppercase tracking-[0.35em] text-indigo-400 leading-none">
-					{selectedBall.name}
-				</h4>
+				<h4 class="font-black text-3xl text-center uppercase tracking-[0.35em] text-indigo-400 leading-none">{selectedBall.name}</h4>
 				<div class="h-1 w-24 bg-indigo-500/30 mt-4 rounded-full"></div>
 			</div>
 			<button onclick={() => showTooltip = false} class="absolute right-6 top-6 text-indigo-900 hover:text-indigo-400 text-xs font-black tracking-widest border border-indigo-900 px-2 py-1">ESC</button>
 		</div>
 
-		<div class="p-10 text-lg text-slate-300 leading-relaxed italic font-serif flex-grow min-h-[140px] cursor-pointer hover:bg-white/5" onclick={() => descExpanded = !descExpanded} role="button" tabindex="0">
+		<div class="p-10 text-lg text-slate-300 leading-relaxed italic font-serif flex-grow min-h-[140px] cursor-pointer hover:bg-white/5" onclick={() => descExpanded = !descExpanded}>
 			<div class="relative z-10 px-4">
 				{#if descExpanded || selectedBall.description.length <= DESC_LIMIT}
 					“{selectedBall.description}”
@@ -214,23 +205,34 @@
 
 		{#if selectedBall.parents && selectedBall.parents.length > 0}
 			<div class="px-10 py-6 bg-indigo-950/20 border-t border-indigo-900/30">
-				<h5 class="text-[10px] font-black text-indigo-500 tracking-[0.4em] uppercase mb-4">Fusion Recipe</h5>
-				<div class="flex flex-wrap gap-3 items-center">
-					{#each selectedBall.parents[0] as parentBall, i}
-						<div class="flex items-center gap-3">
-							<button 
-								onclick={() => selectNewBall(parentBall)}
-								class="flex items-center gap-2 px-4 py-2 bg-[#1a1a1e] border border-indigo-500/30 hover:border-indigo-500 hover:bg-indigo-500/10 transition-all rounded group"
-							>
-								{#if parentBall.img}
-									<img src={parentBall.img} alt={parentBall.name} class="w-5 h-5 object-contain" />
-								{/if}
-								<span class="text-indigo-200 text-xs font-bold uppercase">{parentBall.name}</span>
-							</button>
-							{#if i < selectedBall.parents[0].length - 1}
-								<span class="text-indigo-500 text-xl font-light">+</span>
-							{/if}
+				<h5 class="text-[10px] font-black text-indigo-500 tracking-[0.4em] uppercase mb-4">Fusion Recipes</h5>
+				<div class="flex flex-col gap-6">
+					{#each selectedBall.parents as recipe, recipeIndex}
+						<div class="flex flex-wrap gap-3 items-center">
+							{#each recipe as parentBall, i}
+								<div class="flex items-center gap-3">
+									<button 
+										onclick={() => selectNewBall(parentBall)}
+										class="flex items-center gap-2 px-4 py-2 bg-[#1a1a1e] border border-indigo-500/30 hover:border-indigo-500 hover:bg-indigo-500/10 transition-all rounded group"
+									>
+										{#if parentBall.img}
+											<img src={parentBall.img} alt={parentBall.name} class="w-5 h-5 object-contain" />
+										{/if}
+										<span class="text-indigo-200 text-xs font-bold uppercase">{parentBall.name}</span>
+									</button>
+									{#if i < recipe.length - 1}
+										<span class="text-indigo-500 text-xl font-light">+</span>
+									{/if}
+								</div>
+							{/each}
 						</div>
+						{#if recipeIndex < selectedBall.parents.length - 1}
+							<div class="relative flex items-center py-2">
+								<div class="flex-grow border-t border-indigo-500/10"></div>
+								<span class="flex-shrink mx-4 text-[9px] font-black text-indigo-900 uppercase tracking-widest">OR</span>
+								<div class="flex-grow border-t border-indigo-500/10"></div>
+							</div>
+						{/if}
 					{/each}
 				</div>
 			</div>
@@ -263,11 +265,6 @@
 			{#each selectedBall.damageType as type}
 				<span class="px-4 py-2 bg-indigo-950/40 text-indigo-300 border border-indigo-500/20 rounded text-xs font-black uppercase tracking-[0.2em]">{type}</span>
 			{/each}
-			{#if selectedBall.statusEffect}
-				{#each selectedBall.statusEffect as effect}
-					<span class="px-4 py-2 bg-emerald-950/40 text-emerald-300 border border-emerald-500/20 rounded text-xs font-black uppercase tracking-[0.2em]">{effect}</span>
-				{/each}
-			{/if}
 		</div>
 	</aside>
 {/if}
