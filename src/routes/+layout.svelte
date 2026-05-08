@@ -7,50 +7,31 @@
 
 <div class="app">
 	<Header />
-	<main>{@render children()}</main>
-
-	<footer>
-		<p>
-			visit
-			<a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a>
-			to learn about SvelteKit
-		</p>
-	</footer>
+	<main>
+		{@render children()}
+	</main>
 </div>
 
 <style>
+	:global(body, html) {
+		margin: 0;
+		padding: 0;
+		height: 100vh;
+		width: 100vw;
+		overflow: hidden; /* Disables default browser scrolling */
+	}
+
 	.app {
 		display: flex;
 		flex-direction: column;
-		min-height: 100vh;
+		height: 100vh;
 	}
 
 	main {
 		flex: 1;
+		position: relative;
+		overflow: hidden; /* Clips the zooming grid */
 		display: flex;
 		flex-direction: column;
-		padding: 1rem;
-		width: 100%;
-		max-width: 64rem;
-		margin: 0 auto;
-		box-sizing: border-box;
-	}
-
-	footer {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		padding: 12px;
-	}
-
-	footer a {
-		font-weight: bold;
-	}
-
-	@media (min-width: 480px) {
-		footer {
-			padding: 12px 0;
-		}
 	}
 </style>

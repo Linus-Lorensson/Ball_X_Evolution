@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from "$app/navigation";
 	import { onDestroy, onMount, untrack } from "svelte";
 
     let value: number = $state(0);
@@ -26,6 +27,7 @@
     function increment(positive: boolean = true){
         value += positive? 1 : -1;
     }
+    
 
 </script>
 
