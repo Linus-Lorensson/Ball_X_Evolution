@@ -23,7 +23,7 @@ export function createBall(data: any): Ball {
 }
 
 export function createAllBalls(dataArray: Array<any>): Array<Ball> {
-    return dataArray.map(createBall);
+	return dataArray.map(createBall);
 }
 
 // util functions
