@@ -7,7 +7,8 @@
 		type Ball, 
 		getAxisBalls
 	} from '$lib/utils/balls';
-	import ballData from '$lib/json/balls.json'; 
+	import ballData from '$lib/json/balls.json';
+	import { assets } from '$app/paths';
 
 	// Initialize balls and resolve references
 	const allBalls = createAllBalls(ballData);
