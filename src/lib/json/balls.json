@@ -2,7 +2,7 @@
 	{
 		"name": "Bleed",
 		"description": "Inflicts 2 stacks of bleed. Bleeding enemies receive 1 damage per stack when hit by a ball (max 8 stacks).",
-		"img": "/src/lib/images/baseBalls/Bleed.JPG",
+		"img": "Bleed.JPG",
 		"unlockRequirement": "Unlocked by default",
 		"damageType": ["Base"],
 		"statusEffect": ["Bleed"]
@@ -10,7 +10,7 @@
 	{
 		"name": "Brood Mother",
 		"description": "Has a 25% chance of birthing a baby ball each time it hits an enemy.",
-		"img": "/src/lib/images/baseBalls/Brood Mother.JPG",
+		"img": "Brood Mother.JPG",
 		"unlockRequirement": "Unlocked by default",
 		"damageType": ["Base"],
 		"statusEffect": ["Baby Ball Spawn"]
@@ -18,7 +18,7 @@
 	{
 		"name": "Burn",
 		"description": "Add 1 stack of burn on hit for 3 seconds (max 3 stacks). Burnt units are dealt 4-8 damage per stack per second.",
-		"img": "/src/lib/images/baseBalls/Burn.JPG",
+		"img": "Burn.JPG",
 		"unlockRequirement": "Unlocked by default",
 		"damageType": ["Base"],
 		"statusEffect": ["Burn"]
@@ -26,7 +26,7 @@
 	{
 		"name": "Cell",
 		"description": "Splits into a clone on hit 2 times.",
-		"img": "/src/lib/images/baseBalls/Cell.JPG",
+		"img": "Cell.JPG",
 		"unlockRequirement": "Clear The FUNGALxFOREST",
 		"damageType": ["Base"],
 		"statusEffect": ["Clone"]
@@ -34,7 +34,7 @@
 	{
 		"name": "Charm",
 		"description": "Each hit has a 4% chance of charming the enemy for 5 seconds. Charmed units walk up the board and attack enemies.",
-		"img": "/src/lib/images/baseBalls/Charm.JPG",
+		"img": "Charm.JPG",
 		"unlockRequirement": "Clear The HEAVENLYxGATES",
 		"damageType": ["Base"],
 		"statusEffect": ["Charm"]
@@ -42,21 +42,21 @@
 	{
 		"name": "Dark",
 		"description": "Deals 3.0x damage but destroys itself after hitting an enemy. Has a 3 second cooldown before it can be shot again.",
-		"img": "/src/lib/images/baseBalls/Dark.JPG",
+		"img": "Dark.JPG",
 		"unlockRequirement": "Clear The BONExYARD",
 		"damageType": ["Base"]
 	},
 	{
 		"name": "Earthquake",
 		"description": "Deals 5-13 damage to nearby units in a 3x3 tile square.",
-		"img": "/src/lib/images/baseBalls/Earthquake.JPG",
+		"img": "Earthquake.JPG",
 		"unlockRequirement": "Unlocked by default",
 		"damageType": ["Base", "AOE"]
 	},
 	{
 		"name": "Egg Sac",
 		"description": "Explodes into 2-4 baby balls on hitting an enemy. Has a 3 second cooldown before it can be shot again.",
-		"img": "/src/lib/images/baseBalls/Egg Sac.JPG",
+		"img": "Egg Sac.JPG",
 		"unlockRequirement": "Unlocked by default",
 		"damageType": ["Base"],
 		"statusEffect": ["Baby Ball Spawn"]
@@ -64,7 +64,7 @@
 	{
 		"name": "Freeze",
 		"description": "Has a 4% chance to freeze enemies for 5.0 seconds. Frozen enemies receive 25% more damage.",
-		"img": "/src/lib/images/baseBalls/Freeze.JPG",
+		"img": "Freeze.JPG",
 		"unlockRequirement": "Unlocked by default",
 		"damageType": ["Base"],
 		"statusEffect": ["Freeze"]
@@ -72,35 +72,35 @@
 	{
 		"name": "Ghost",
 		"description": "Passes through enemies.",
-		"img": "/src/lib/images/baseBalls/Ghost.JPG",
+		"img": "Ghost.JPG",
 		"unlockRequirement": "Unlocked by default",
 		"damageType": ["Base"]
 	},
 	{
 		"name": "Iron",
 		"description": "Deals double damage but moves 40% slower.",
-		"img": "/src/lib/images/baseBalls/Iron.JPG",
+		"img": "Iron.JPG",
 		"unlockRequirement": "Unlocked by default",
 		"damageType": ["Base"]
 	},
 	{
 		"name": "Laser (Horizontal)",
 		"description": "Deals 9-18 damage to all enemies in the same row.",
-		"img": "/src/lib/images/baseBalls/Laser (Horizontal).JPG",
+		"img": "Laser (Horizontal).JPG",
 		"unlockRequirement": "Unlocked by default",
 		"damageType": ["AOE"]
 	},
 	{
 		"name": "Laser (Vertical)",
 		"description": "Deals 9-18 damage to all enemies in the same column.",
-		"img": "/src/lib/images/baseBalls/Laser (Vertical).JPG",
+		"img": "Laser (Vertical).JPG",
 		"unlockRequirement": "Unlocked by default",
 		"damageType": ["AOE"]
 	},
 	{
 		"name": "Light",
 		"description": "Blinds enemies on hit for 3 seconds. Blinded units have a hard time detecting you and have a 50% chance of missing when they attack.",
-		"img": "/src/lib/images/baseBalls/Light.JPG",
+		"img": "Light.JPG",
 		"unlockRequirement": "Clear The LIMINALxDESERT",
 		"damageType": ["Base"],
 		"statusEffect": ["Blind"]
@@ -108,21 +108,21 @@
 	{
 		"name": "Lightning",
 		"description": "Deals 1-20 damage to up to 3 nearby enemies.",
-		"img": "/src/lib/images/baseBalls/Lightning.JPG",
+		"img": "Lightning.JPG",
 		"unlockRequirement": "Unlocked by default",
 		"damageType": ["AOE"]
 	},
 	{
 		"name": "Stone",
 		"description": "Initially deals 300% damage. Damage erodes by 40% each time hitting an enemy (minimum 50%).",
-		"img": "/src/lib/images/baseBalls/Stone.JPG",
+		"img": "Stone.JPG",
 		"unlockRequirement": "Clear The SNOWYxSHORES",
 		"damageType": ["Base"]
 	},
 	{
 		"name": "Poison",
 		"description": "Applies 1 stack of poison on hit (max 5 stacks). Poison lasts for 6 seconds and each stack deals 1-4 damage per second.",
-		"img": "/src/lib/images/baseBalls/Poison.JPG",
+		"img": "Poison.JPG",
 		"unlockRequirement": "Unlocked by default",
 		"damageType": ["Base"],
 		"statusEffect": ["Poison"]
@@ -130,7 +130,7 @@
 	{
 		"name": "Time",
 		"description": "Explodes into a time snare upon hitting an enemy, which stays on the field for 20 seconds and freezes enemies inside it.",
-		"img": "/src/lib/images/baseBalls/Time.JPG",
+		"img": "Time.JPG",
 		"unlockRequirement": "?",
 		"damageType": ["Base"],
 		"statusEffect": ["Time Snare"]
@@ -138,7 +138,7 @@
 	{
 		"name": "Vampire",
 		"description": "Each hit has a 4.5% chance of healing 1 health.",
-		"img": "/src/lib/images/baseBalls/Vampire.JPG",
+		"img": "Vampire.JPG",
 		"unlockRequirement": "Unlocked by default",
 		"damageType": ["Base"],
 		"statusEffect": ["Heal"]
@@ -146,7 +146,7 @@
 	{
 		"name": "Wind",
 		"description": "Passes through enemies and slows them down by 30% for 5 seconds, but deals 25% less damage.",
-		"img": "/src/lib/images/baseBalls/Wind.JPG",
+		"img": "Wind.JPG",
 		"unlockRequirement": "Unlocked by default",
 		"damageType": ["Base"],
 		"statusEffect": ["Slow"]

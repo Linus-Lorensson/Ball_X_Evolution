@@ -4,7 +4,7 @@ export interface Ball {
 	name: string;
 	description: string;
 	img: string;
-	parents?: Array<Array<string>>; // Array<Array<string>> is just be name of ball,
+	parents?: Array<Array<Ball>>; // Now points to Ball objects instead of strings
 	unlockRequirement?: string;
 	damageType: Array<string>;
 	statusEffect?: Array<string>;
@@ -15,6 +15,8 @@ export function createBall(data: any): Ball {
 		name: String(data.name),
 		description: String(data.description),
 		img: String(data.img),
+		// Note: data.parents from raw JSON is likely still strings.
+		// These will need to be resolved to Ball objects to satisfy the interface.
 		parents: data.parents ? data.parents : undefined,
 		unlockRequirement: data.unlockRequirement ? String(data.unlockRequirement) : undefined,
 		damageType: data.damageType,
@@ -23,7 +25,34 @@ export function createBall(data: any): Ball {
 }
 
 export function createAllBalls(dataArray: Array<any>): Array<Ball> {
-	return dataArray.map(createBall);
+	// 1. Create a Map for quick lookup by name
+	const ballMap = new Map<string, Ball>();
+
+	// 2. Initialize all balls (first pass)
+	const allBalls = dataArray.map((data) => {
+		const ball = createBall(data);
+		ballMap.set(ball.name, ball);
+		return ball;
+	});
+
+	// 3. Link the parents (second pass)
+	allBalls.forEach((ball, index) => {
+		const rawParents = dataArray[index].parents; // Get the raw string arrays from JSON
+		if (rawParents) {
+			// Transform Array<Array<string>> into Array<Array<Ball>>
+			ball.parents = rawParents.map((group: string[]) =>
+				group.map((parentName: string) => {
+					const parentObj = ballMap.get(parentName);
+					if (!parentObj) {
+						throw new Error(`Parent ball "${parentName}" not found for ${ball.name}`);
+					}
+					return parentObj;
+				})
+			);
+		}
+	});
+
+	return allBalls;
 }
 
 // utility functions
@@ -44,8 +73,9 @@ export function getAxisBalls(ballArray: Array<Ball>): Array<Ball> {
 		if (ball.parents) {
 			ball.parents.forEach((eachParentBall) => {
 				eachParentBall.forEach((parentBall) => {
-					if (!ballsToShow.includes(parentBall)) {
-						ballsToShow.push(parentBall);
+					// Since parentBall is now a Ball object, we access .name
+					if (!ballsToShow.includes(parentBall.name)) {
+						ballsToShow.push(parentBall.name);
 					}
 				});
 			});
@@ -71,7 +101,9 @@ export function getEvolutionBallFromParents(
 		if (evolutionBall.parents && evolutionBall.parents.length) {
 			const length = evolutionBall.parents.length;
 			for (let i = 0; i < length; i++) {
-				const parentSet = JSON.stringify(evolutionBall.parents[i].sort());
+				// Map the Ball objects back to their names for comparison with the input strings
+				const parentNames = evolutionBall.parents[i].map((p) => p.name).sort();
+				const parentSet = JSON.stringify(parentNames);
 				if (parentSet == parentCompare) {
 					doesMatch = true;
 					break;

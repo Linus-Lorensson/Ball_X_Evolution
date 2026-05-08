@@ -7,17 +7,12 @@
 		getEvolutionBallFromParents, 
 		type Ball, 
 		getAxisBalls
-
 	} from '$lib/utils/balls';
-	
 	import ballData from '$lib/json/balls.json'; 
 
 	const allBalls = createAllBalls(ballData);
-	let baseBalls = $derived(getAxisBalls(ballData));
+	let baseBalls = $derived(getAxisBalls(allBalls));
 	let evolutionBalls = $derived(getEvolutionBalls(allBalls));
-
-	$inspect(baseBalls)
-	$inspect(evolutionBalls)
 
 	const gridSize = $derived(baseBalls.length + 1);
 	const totalCells = $derived(gridSize * gridSize);
@@ -25,12 +20,24 @@
 	let scale = $state(0.5);
 	let pos = $state({ x: 0, y: 0 });
 	let isDragging = $state(false);
+	let hasMoved = $state(false); // Tracks if the current press is a drag [cite: 15, 16]
 	let dragStart = { x: 0, y: 0 };
 	
 	let showTooltip = $state(false);
 	let selectedBall = $state<Ball | null>(null);
 	let descExpanded = $state(false);
 	const DESC_LIMIT = 200; 
+
+	// Derived list of balls that use the selectedBall as a parent
+	let childEvolutions = $derived(
+		selectedBall 
+			? allBalls.filter(ball => 
+				ball.parents?.some(group => 
+					group.some(parent => parent.name === selectedBall?.name)
+				)
+			)
+			: []
+	);
 
 	onMount(() => {
 		const viewportWidth = window.innerWidth;
@@ -74,21 +81,31 @@
 	function onMouseDown(e: MouseEvent) {
 		if (e.button !== 0) return;
 		isDragging = true;
+		hasMoved = false; // Reset movement status on new click [cite: 15]
 		dragStart = { x: e.clientX - pos.x, y: e.clientY - pos.y };
 	}
 
 	function onMouseMove(e: MouseEvent) {
 		if (!isDragging) return;
+		
+		// If the mouse moves more than 5px, mark as a drag to prevent accidental click [cite: 16]
+		const dx = Math.abs(e.clientX - (dragStart.x + pos.x));
+		const dy = Math.abs(e.clientY - (dragStart.y + pos.y));
+		if (dx > 5 || dy > 5) hasMoved = true;
+
 		pos.x = e.clientX - dragStart.x;
 		pos.y = e.clientY - dragStart.y;
 	}
 
-	function onMouseUp() { isDragging = false; }
+	function onMouseUp() { 
+		isDragging = false;
+	}
 
 	function handleCellClick(row: number, col: number) {
+		if (hasMoved) return; // Prevent selection if the user was just panning [cite: 17, 18]
+		
 		if (row === 0 && col === 0) return;
 		descExpanded = false;
-
 		if (row === 0 || col === 0) {
 			const index = (row || col) - 1;
 			selectedBall = baseBalls[index];
@@ -96,13 +113,12 @@
 			const parent1 = baseBalls[row - 1].name;
 			const parent2 = baseBalls[col - 1].name;
 			const fusion = getEvolutionBallFromParents([parent1, parent2], evolutionBalls);
-			
 			if (fusion) {
 				selectedBall = fusion;
 			} else {
 				selectedBall = {
 					name: "404 Evolution",
-					description: `The combination of ${parent1} and ${parent2} is unknown, shit might not exist. Maybe this is what destroyed Babylon...?`,
+					description: `The combination of ${parent1} and ${parent2} is unknown, it might not exist. Maybe this is what destroyed Babylon...?`,
 					img: "", 
 					damageType: ["Null"],
 					statusEffect: ["None"]
@@ -110,6 +126,11 @@
 			}
 		}
 		showTooltip = true;
+	}
+
+	function selectNewBall(ball: Ball) {
+		selectedBall = ball;
+		descExpanded = false;
 	}
 </script>
 
@@ -163,7 +184,8 @@
 </div>
 
 {#if showTooltip && selectedBall}
-	<aside class="fixed bottom-12 right-12 w-[36rem] min-h-[520px] bg-[#0f0f12] border border-indigo-500 shadow-[0_0_80px_rgba(99,102,241,0.5)] z-50 text-slate-200 rounded-xl flex flex-col backdrop-blur-2xl overflow-hidden">
+	<aside class="fixed bottom-12 right-12 w-[36rem] min-h-[520px] bg-[#0f0f12] border 
+ border-indigo-500 shadow-[0_0_80px_rgba(99,102,241,0.5)] z-50 text-slate-200 rounded-xl flex flex-col backdrop-blur-2xl overflow-hidden">
 		<div class="relative p-10 border-b border-indigo-900/50 flex items-center justify-center h-[180px] bg-gradient-to-b from-indigo-950/50 to-transparent flex-shrink-0">
 			{#if selectedBall.img}
 				<div class="absolute left-10 top-1/2 -translate-y-1/2">
@@ -179,9 +201,7 @@
 			<button onclick={() => showTooltip = false} class="absolute right-6 top-6 text-indigo-900 hover:text-indigo-400 text-xs font-black tracking-widest border border-indigo-900 px-2 py-1">ESC</button>
 		</div>
 
-		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<!-- svelte-ignore a11y_no_static_element_interactions -->
-		<div class="p-10 text-lg text-slate-300 leading-relaxed italic font-serif flex-grow min-h-[140px] cursor-pointer hover:bg-white/5" onclick={() => descExpanded = !descExpanded}>
+		<div class="p-10 text-lg text-slate-300 leading-relaxed italic font-serif flex-grow min-h-[140px] cursor-pointer hover:bg-white/5" onclick={() => descExpanded = !descExpanded} role="button" tabindex="0">
 			<div class="relative z-10 px-4">
 				{#if descExpanded || selectedBall.description.length <= DESC_LIMIT}
 					“{selectedBall.description}”
@@ -196,13 +216,40 @@
 			<div class="px-10 py-6 bg-indigo-950/20 border-t border-indigo-900/30">
 				<h5 class="text-[10px] font-black text-indigo-500 tracking-[0.4em] uppercase mb-4">Fusion Recipe</h5>
 				<div class="flex flex-wrap gap-3 items-center">
-					{#each selectedBall.parents[0] as parentName, i}
+					{#each selectedBall.parents[0] as parentBall, i}
 						<div class="flex items-center gap-3">
-							<div class="px-4 py-2 bg-[#1a1a1e] border border-indigo-500/30 text-indigo-200 text-xs font-bold uppercase rounded">{parentName}</div>
+							<button 
+								onclick={() => selectNewBall(parentBall)}
+								class="flex items-center gap-2 px-4 py-2 bg-[#1a1a1e] border border-indigo-500/30 hover:border-indigo-500 hover:bg-indigo-500/10 transition-all rounded group"
+							>
+								{#if parentBall.img}
+									<img src={parentBall.img} alt={parentBall.name} class="w-5 h-5 object-contain" />
+								{/if}
+								<span class="text-indigo-200 text-xs font-bold uppercase">{parentBall.name}</span>
+							</button>
 							{#if i < selectedBall.parents[0].length - 1}
 								<span class="text-indigo-500 text-xl font-light">+</span>
 							{/if}
 						</div>
+					{/each}
+				</div>
+			</div>
+		{/if}
+
+		{#if childEvolutions.length > 0}
+			<div class="px-10 py-6 bg-indigo-950/10 border-t border-indigo-900/30">
+				<h5 class="text-[10px] font-black text-indigo-400 tracking-[0.4em] uppercase mb-4">Used In Evolutions</h5>
+				<div class="flex flex-wrap gap-3 items-center">
+					{#each childEvolutions as child}
+						<button 
+							onclick={() => selectNewBall(child)}
+							class="flex items-center gap-2 px-4 py-2 bg-[#1a1a1e] border border-indigo-500/10 hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all rounded group"
+						>
+							{#if child.img}
+								<img src={child.img} alt={child.name} class="w-5 h-5 object-contain opacity-70 group-hover:opacity-100" />
+							{/if}
+							<span class="text-indigo-300/70 group-hover:text-indigo-200 text-xs font-bold uppercase">{child.name}</span>
+						</button>
 					{/each}
 				</div>
 			</div>
