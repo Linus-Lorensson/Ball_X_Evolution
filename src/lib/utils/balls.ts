@@ -14,7 +14,7 @@ export function createBall(data: any): Ball {
 	return {
 		name: String(data.name),
 		description: String(data.description),
-		img: String(data.img),
+		img: data.img ? String(data.img) : "",
 		// Note: data.parents from raw JSON is likely still strings.
 		// These will need to be resolved to Ball objects to satisfy the interface.
 		parents: data.parents ? data.parents : undefined,
