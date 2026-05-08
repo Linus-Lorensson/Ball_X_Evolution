@@ -26,7 +26,7 @@ export function createAllBalls(dataArray: Array<any>): Array<Ball> {
 	return dataArray.map(createBall);
 }
 
-// util functions
+// utility functions
 
 export function getBaseBalls(ballArray: Array<Ball>): Array<Ball> {
     return ballArray.filter((ball) => ball.parents == undefined || ball.parents.length == 0)
